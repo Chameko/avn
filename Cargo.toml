@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "echro-core",
+    "echro-script"
+]
