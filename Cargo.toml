@@ -2,5 +2,5 @@
 
 members = [
     "echro-core",
-    "echro-script"
+    "canyon"
 ]

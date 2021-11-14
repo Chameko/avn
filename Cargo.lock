@@ -3,9 +3,9 @@
 version = 3
 
 [[package]]
-name = "echro-core"
+name = "canyon"
 version = "0.1.0"
 
 [[package]]
-name = "echro-script"
+name = "echro-core"
 version = "0.1.0"
