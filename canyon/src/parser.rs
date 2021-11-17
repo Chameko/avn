@@ -140,7 +140,7 @@ impl Parser {
 
 	pub fn parse_program(&mut self) -> Result<Program, ParserErrors> {
 		// Create a program and errors
-		let program = Program{ statements: vec![] };
+		let mut program = Program{ statements: vec![] };
 		let mut errors = ParserErrors::new();
 
 		loop {
@@ -148,6 +148,8 @@ impl Parser {
 				if let Err(e) = r {
 					// If we get an error add it to the list and continue
 					errors.push(e);
+				} else {
+					program.statements.push(r.unwrap());
 				}
 			} else {
 				// No more statements to parse so we leave
@@ -168,6 +170,7 @@ impl Parser {
 			TokenType::Keyword(l) => { 
 				match l.as_str() {
 					"let" => Some(self.parse_let_statement(token)),
+					"return" => Some(self.parse_return_statement(token)),
 					_ => Some(Err(ParsingError::new("Expected statement".to_string(), token)))
 				}
 			},
@@ -239,6 +242,21 @@ impl Parser {
 
 		let value = Expression::Null;
 
+		self.token_stream.next();
+
 		Ok( Statement::LetStatement(LetStatement{token: first_token, name, value}) )
+	}
+
+	fn parse_return_statement(&mut self, first_token: Token) -> Result<Statement, ParsingError> {
+		// Look until semicolon for now
+		while Parser::is_symbol(self.token_stream.peek(), &[";"], "Expected ;".to_string(), &first_token).is_err() {
+			if let None = self.token_stream.next() {
+				return Err(ParsingError::new("Expected ;".to_string(), first_token.clone()))
+			};
+		}
+
+		self.token_stream.next();
+
+		Ok( Statement::ReturnStatement(ReturnStatement{ token: first_token, return_value: Expression::Null}))
 	}
 }
